@@ -1,3 +1,5 @@
+// Alle genstande
+// Et array af objekter, et objekt indenholder en genstand og dens tal
 const items = [
     {
         item: 'kort',
