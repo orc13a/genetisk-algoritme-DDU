@@ -1,0 +1,2 @@
+# genetisk algoritme-DDU
+ 
