@@ -4,11 +4,12 @@ function random(min, max) {
 }
 
 let allBackpacks = []; // Holder alle tasker
+let nextAllBackpacks = []; // Holder alle tasker
 
 // Laver tasker mellem 2 tal af antal genstande der må komme i
 // Der komme kun en af hver genstand i tasken
 function generatePossibleBackpacks() {
-    let numberItemsAllowed = random(5, 15); // Finder det antal genstande som skal i tasken
+    let numberItemsAllowed = random(6, 23); // Finder det antal genstande som skal i tasken
     let itemsPickedIndex = []; // Holder på de genstandes index som er blevet pakket
     let backpack = []; // Den taske som bliver pakket
 
@@ -63,11 +64,113 @@ function sumAllBackpack() {
     return sumArray;
 }
 
-// TODO
-// Lav dette forloop om til en funktion som  kun laver de mulige unikke tasker
-for (let i = 0; i < 100; i++) {
-    generatePossibleBackpacks();
+function calFitnessForAll() {
+    // allBackpacks = nextAllBackpacks;
+
+    let allBackpacksSum = sumAllBackpack();
+
+    // Holder på genstande med vægt under 5000g
+    let under5000gArray = [];
+
+    // Hvor hver sum objekt af en taske
+    for (let i = 0; i < allBackpacksSum.length; i++) {
+        const item = allBackpacksSum[i];
+        if (item.totalWeight <= 5000) {
+            under5000gArray.push(allBackpacks[i]);
+        }
+    }
+
+    // Gemmer de vægt godkendte tasker
+    allBackpacks = under5000gArray;
 }
 
-console.log(sumAllBackpack());
+function reproduction() {
+    for (let i = 0; i < allBackpacks.length; i++) {
+        if (i !== allBackpacks.length - 1) {
+            crossover(allBackpacks[i], allBackpacks[i + 1]);
+        } else {
+            crossover(allBackpacks[0], allBackpacks[i]);
+        }
+    }
 
+    evolutionTracker();
+}
+
+function evolutionTracker() {
+    const sum = sumAllBackpack();
+
+    sum.forEach(bp => {
+        if (bp.totalValue > bestBackpack.totalValue) {
+            bestBackpack = bp;
+            lastBestpackGeneration = generation;
+        }
+    });
+
+    if (generation - lastBestpackGeneration === 10) {
+        run = false;
+    }
+
+    document.getElementById('generationOutput').innerText = ` ${generation - 10}`;
+
+    generation++;
+}
+
+function crossover(pack1, pack2) {
+    let pack1Copy = pack1;
+    let pack2Copy = pack2;
+
+    const pack1Center = Math.ceil(pack1.length / 2);
+    const pack2Center = Math.ceil(pack2.length / 2);
+
+    let take1 = pack1Copy.slice(0, pack1Center + 1);
+    let take2 = pack2Copy.slice(pack2Center, pack2.length);
+
+    let mergeBackpack = take1.concat(take2);
+    let newBackpack = removeDuplicateInArray(mergeBackpack);
+    const itemsRemoved = mergeBackpack.length - newBackpack.length;
+    replaceDuplicates(newBackpack, itemsRemoved);
+
+    nextAllBackpacks.push(newBackpack);
+}
+
+function findDuplicateInArray(array) {
+    let duplicates = [];
+    let foundDuplicates = array.filter((item, index) => array.indexOf(item) !== index);
+
+    for (const i of foundDuplicates) {
+        duplicates.push(i.item);
+    }
+
+    return duplicates;
+}
+
+function removeDuplicateInArray(array) {
+    let arr = [...array];
+    const duplicats = findDuplicateInArray(array);
+
+    for (let i = 0; i < arr.length; i++) {
+        const it = arr[i];
+        if (duplicats.includes(it.item) === true) {
+            arr.splice(i, 1);
+            let di = duplicats.indexOf(it.item);
+            duplicats.splice(di, 1);
+            i = 0;
+        }
+    }
+
+    return arr;
+}
+
+function replaceDuplicates(array, replaceNr) {
+    let itemsCopy = [...items];
+    array.forEach(elt => {
+        const i = itemsCopy.indexOf(elt);
+        itemsCopy.splice(i, 1);
+    });
+    
+    for (let i = 1; i <= replaceNr; i++) {
+        const randomIndex = random(0, itemsCopy.length - 1);
+        array.push(itemsCopy[randomIndex]);
+        itemsCopy.splice(randomIndex, 1);
+    }
+}
