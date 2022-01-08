@@ -24,3 +24,11 @@ function createFirstGeneration() {
 
     allBps.push(bp);
 }
+
+function sumAllBps() {
+    let allSumBps = []; 
+
+    allBps.forEach(bp => {
+        
+    });
+}
