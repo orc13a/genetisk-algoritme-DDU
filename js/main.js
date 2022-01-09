@@ -27,8 +27,23 @@ function createFirstGeneration() {
 
 function sumAllBps() {
     let allSumBps = []; 
+    let totalWeight = 0;
+    let totalValue = 0;
 
     allBps.forEach(bp => {
-        
+        bp.forEach(item => {
+            totalWeight += item.weight;
+            totalValue += item.price;
+        });
+
+        allSumBps.push({
+            totalWeight,
+            totalValue
+        });
+
+        totalWeight = 0;
+        totalValue = 0;
     });
+
+    return allSumBps;
 }
