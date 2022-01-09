@@ -1,3 +1,8 @@
+// ####################################################################################################
+// #### TODO #####
+// Lav fitness bedre, kig på genstande i en taske som har en høj pris
+// ####################################################################################################
+
 // Tilfældigt tal mellem "min" og "max" begge taget med
 function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -53,15 +58,131 @@ function sumAllBps() {
 }
 
 function removeOverWeight() {
-    const bpsSum = sumAllBps();
+    let allBackpacksSum = sumAllBps();
 
-    for (let i = 0; i < bpsSum.length; i++) {
-        const bp = bpsSum[i];
-        if (bp.totalWeight > 5000) {
-            allBps.splice(i, 1);
-            i--;
+    // Holder på genstande med vægt under 5000g
+    let under5000gArray = [];
+
+    // Hvor hver sum objekt af en taske
+    for (let i = 0; i < allBackpacksSum.length; i++) {
+        const item = allBackpacksSum[i];
+        if (item.totalWeight <= 5000) {
+            under5000gArray.push(allBps[i]);
         }
     }
 
+    // Gemmer de vægt godkendte tasker
+    allBps = under5000gArray;
+
     updateGeneration();
+}
+
+function createNewGen() {
+    let newAllBps = [];
+
+    for (let i = 1; i <= 2000; i++) {
+        const randomBp1 = allBps[random(0, allBps.length - 1)];
+        let randomBp2 = allBps[random(0, allBps.length - 1)];
+
+        while (randomBp1 === randomBp2) {
+            randomBp2 = allBps[random(0, allBps.length - 1)];
+        }
+
+        const newBp = crossover(randomBp1, randomBp2);
+        newAllBps.push(newBp);
+    }
+
+    allBps = newAllBps;
+
+    updateGeneration();
+}
+
+function crossover(backpack1, backpack2) {
+    let pb1 = [...backpack1];
+    let pb2 = [...backpack2];
+
+    const pack1Center = Math.ceil(pb1.length / 2);
+    const pack2Center = Math.ceil(pb2.length / 2);
+
+    let take1 = pb1.slice(0, pack1Center + 1);
+    let take2 = pb2.slice(pack2Center, pb2.length);
+
+    let mergeBackpack = take1.concat(take2);
+    let newBackpack = removeDuplicateInArray(mergeBackpack);
+    const itemsRemoved = mergeBackpack.length - newBackpack.length;
+    replaceDuplicates(pb1, pb2, newBackpack, itemsRemoved);
+    if (random(1, 10) === 5) {
+        mutat(newBackpack);
+    }
+
+    return newBackpack;
+}
+
+function findDuplicateInArray(array) {
+    let duplicates = [];
+    let foundDuplicates = array.filter((item, index) => array.indexOf(item) !== index);
+
+    for (const i of foundDuplicates) {
+        duplicates.push(i.item);
+    }
+
+    return duplicates;
+}
+
+function removeDuplicateInArray(array) {
+    let arr = [...array];
+    const duplicats = findDuplicateInArray(array);
+
+    for (let i = 0; i < arr.length; i++) {
+        const it = arr[i];
+        if (duplicats.includes(it.item) === true) {
+            arr.splice(i, 1);
+            let di = duplicats.indexOf(it.item);
+            duplicats.splice(di, 1);
+            i = 0;
+        }
+    }
+
+    return arr;
+}
+
+function replaceDuplicates(backpack1, backpack2, newBackpack, itemsRemoved) {
+    let pb1 = [...backpack1];
+    let pb2 = [...backpack2];
+    let hightsPriceItem = {
+        item: '',
+        weight: 0,
+        price: 0
+    };
+    // let itemsReplaced = 0;
+
+    for (let i = 1; i <= itemsRemoved; i++) {
+        pb1.forEach(item => {
+            if (newBackpack.includes(item) === false && item.price > hightsPriceItem.price) {
+                hightsPriceItem = item;
+                i++;
+            }
+        });
+
+        pb2.forEach(item => {
+            if (newBackpack.includes(item) === false && item.price > hightsPriceItem.price) {
+                hightsPriceItem = item;
+                i++;
+            }
+        });
+    }
+}
+
+function mutat(array) {
+    let itemsCopy = [...items];
+    array.forEach(elt => {
+        const i = itemsCopy.indexOf(elt);
+        itemsCopy.splice(i, 1);
+    });
+    
+    for (let i = 1; i <= random(1, 5); i++) {
+        const randomIndex = random(0, itemsCopy.length - 1);
+        array.push(itemsCopy[randomIndex]);
+        // itemsCopy.splice(randomIndex, 1);
+    }
 }
