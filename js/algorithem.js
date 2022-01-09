@@ -12,3 +12,7 @@ for (let i = 1; i <= 2000; i++) {
 
 updateGeneration();
 
+removeOverWeight();
+
+// console.log(allBps);
+// console.log(sumAllBps());
