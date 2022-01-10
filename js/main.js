@@ -57,6 +57,21 @@ function sumAllBps() {
     return allSumBps;
 }
 
+function sumBp(array) {
+    let totalWeight = 0;
+    let totalValue = 0;
+
+    array.forEach(item => {
+        totalWeight += item.weight;
+        totalValue += item.price;
+    });
+
+    return {
+        totalWeight,
+        totalValue
+    };
+}
+
 function removeOverWeight() {
     let allBackpacksSum = sumAllBps();
 
@@ -71,9 +86,33 @@ function removeOverWeight() {
         }
     }
 
+    let itemsC = [...items];
+
+    for (let i = 0; i < under5000gArray.length; i++) {
+        const bp = under5000gArray[i];
+
+        bp.forEach(item => {
+            const i = itemsC.indexOf(item);
+            itemsC.splice(i, 1);
+        });
+
+        let randomItem = itemsC[random(0, itemsC.length - 1)];
+        
+        while (under5000gArray.includes(randomItem) === true && (sumBp(bp).totalWeight += randomItem.weight) > 5000 === true) {
+            randomItem = itemsC[random(0, itemsC.length - 1)]; 
+        }
+        
+        console.log(sumBp(bp).totalWeight);
+        bp.push(randomItem);
+        console.log(sumBp(bp).totalWeight);
+        console.log('\n');
+        itemsC.splice(itemsC.indexOf(randomItem), 1);
+        itemsC = [...items];
+    }
+
     // Gemmer de vægt godkendte tasker
     allBps = under5000gArray;
-
+    
     updateGeneration();
 }
 
@@ -132,15 +171,15 @@ function findDuplicateInArray(array) {
 function removeDuplicateInArray(array) {
     let arr = [...array];
     const duplicats = findDuplicateInArray(array);
-
+    console.log(arr);
     for (let i = 0; i < arr.length; i++) {
         const it = arr[i];
-        if (duplicats.includes(it.item) === true) {
+        /* if (duplicats.includes(it.item) === true) {
             arr.splice(i, 1);
             let di = duplicats.indexOf(it.item);
             duplicats.splice(di, 1);
             i = 0;
-        }
+        } */
     }
 
     return arr;

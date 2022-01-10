@@ -11,12 +11,12 @@ for (let i = 1; i <= 2000; i++) {
 }
 
 updateGeneration();
-
-for (let i = 1; i <= 100; i++) {
+removeOverWeight();
+/* for (let i = 1; i <= 100; i++) {
     removeOverWeight();
 
     createNewGen();
-}
+} */
 
 console.log(allBps);
 console.log(sumAllBps());
