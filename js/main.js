@@ -86,33 +86,46 @@ function removeOverWeight() {
         }
     }
 
+    // Gemmer de vægt godkendte tasker
+    allBps = under5000gArray;
+    
+    updateGeneration();
+}
+
+function updateWeight() {
     let itemsC = [...items];
 
-    for (let i = 0; i < under5000gArray.length; i++) {
-        const bp = under5000gArray[i];
+    for (let i = 0; i < allBps.length; i++) {
+        const bp = allBps[i];
 
         bp.forEach(item => {
             const i = itemsC.indexOf(item);
             itemsC.splice(i, 1);
         });
-
-        let randomItem = itemsC[random(0, itemsC.length - 1)];
         
-        while (under5000gArray.includes(randomItem) === true && (sumBp(bp).totalWeight += randomItem.weight) > 5000 === true) {
-            randomItem = itemsC[random(0, itemsC.length - 1)]; 
+        let randomItem = itemsC[random(0, itemsC.length - 1)];
+        let noItem = 0;
+        
+        while ((sumBp(bp).totalWeight + randomItem.weight) > 5000 === true) {
+            noItem++;
+
+            if ((sumBp(bp).totalWeight + randomItem.weight) <= 5000 === true) {
+                break;
+            } else {
+                randomItem = itemsC[random(0, itemsC.length - 1)];
+            }
+
+            if (noItem === itemsC.length) {
+                break;
+            }
         }
         
-        console.log(sumBp(bp).totalWeight);
         bp.push(randomItem);
-        console.log(sumBp(bp).totalWeight);
-        console.log('\n');
+
         itemsC.splice(itemsC.indexOf(randomItem), 1);
         itemsC = [...items];
     }
 
-    // Gemmer de vægt godkendte tasker
-    allBps = under5000gArray;
-    
     updateGeneration();
 }
 
