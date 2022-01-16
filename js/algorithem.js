@@ -4,6 +4,7 @@ let run = true;
 genStartPop();
 findBestBp();
 
-// while (run) {
-    
-// }
+while (continueAlgo()) {
+    genNewGeneration();
+    findBestBp();
+}
