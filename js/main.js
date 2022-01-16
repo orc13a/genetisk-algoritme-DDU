@@ -77,7 +77,7 @@ function findBestBps() {
 
     allBps.forEach(bp => {
         const fitness = calFitness(bp);
-        if (fitness >= 18) {
+        if (fitness >= 20) {
             bestBps.push(bp);
         }
     });
