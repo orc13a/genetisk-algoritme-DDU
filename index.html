@@ -5,24 +5,27 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Opgave i genetisk algoritme</title>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js" integrity="sha512-TW5s0IT/IppJtu76UbysrBH9Hy/5X41OTAbQuffZFU6lQ1rdcLHzpU5BzVvr/YFykoiMYZVWlr/PX1mDcfM9Qg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!--
+        Gustav og Oliver C, 3.i DDU 2 HCØL
+    -->
 </head>
 <body>
-    <main id="main-output" style="padding: 25px;">
-        <div>
-            <span>
-                Generation:
-            </span>
-            <span id="generationOutput">
-                
-            </span>
-        </div>
+    <main>
+        <canvas id="myChart">
+            <!-- Graf tegnes her -->
+        </canvas>
     </main>
     <footer>
         <hr>
+        x-aksen er genration nummer og y-aksen er bedste total værdi af taske
+        <br><br>
         Af Gustav og Oliver C, DDU 2 HCØL
     </footer>
 </body>
     <script src="./js/items.js"></script>
     <script src="./js/main.js"></script>
     <script src="./js/algorithem.js"></script>
+    <script src="./js/myChart.js"></script>
 </html>
